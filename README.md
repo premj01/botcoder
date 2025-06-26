@@ -3,7 +3,7 @@
 
 Watch the walkthrough of BotCoder in action:
 
-[![Watch on YouTube](https://drive.google.com/u/0/drive-viewer/AKGpihac2Z0hGARGeE4JYW_Yu1JwNQT8WbpkPJtBEe5gs0IyXFgCKMKC3i_QRsSQrjmUDIaSUyUqRfIMWyatsLhsB8vxO5AACIHBe5w=s1600-rw-v1)](https://youtu.be/biTTnaTQh64?si=ehZiF7xO5ekfrPz3)
+[![Watch on YouTube](https://raw.githubusercontent.com/premj01/botcoder/refs/heads/main/Public%20Resources/BotCoder%20AI.png)](https://youtu.be/biTTnaTQh64?si=ehZiF7xO5ekfrPz3)
 
 > Replace `YOUR_VIDEO_ID_HERE` with the actual ID after uploading.
 
