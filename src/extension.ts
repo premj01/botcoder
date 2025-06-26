@@ -1,46 +1,43 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, ChatSession, GenerativeModel, Part } from "@google/generative-ai";
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 
 
 
 
+const messageParts: (string | Part)[] = [];
 
-async function fetchGeminiReply(prompt: string): Promise<string> {
+async function fetchGeminiReplyFileChat(chat: ChatSession, prompt: string, fileContent: string = ""): Promise<string> {
   try {
 
-    const result = await model.generateContent(prompt);
+    if (fileContent === "") {
+      messageParts.push({
+        text: prompt
+      });
+    } else {
+      messageParts.push({
+        text: `${prompt} \nFile content if available: \n\`\`\`\n${fileContent}\n\`\`\``
+      });
+    }
+
+    const result = await chat.sendMessage(messageParts);
     const response = result.response;
     return response.text() || "❌ No response";
   } catch (err) {
     console.error("Gemini error:", err);
-    return "❌ Gemini error occurred.";
+    return `❌ Gemini error: ${err.message || String(err)}`;
+
   }
 }
 
-
-
-async function fetchGeminiReplyFileChat(prompt: string, fileContent: any = ""): Promise<string> {
-  try {
-
-    const chat = model.startChat(); // keep conversation going
-
-    const result = await chat.sendMessage([
-      { text: "Here’s the file you asked for:" },
-      { text: prompt },
-      { text: fileContent },
-    ]);
-    const response = result.response;
-    return response.text() || "❌ No response";
-  } catch (err) {
-    console.error("Gemini error:", err);
-    return "❌ Gemini error occurred.";
-  }
-}
 
 function getWorkspaceFiles(): string[] {
   const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -75,6 +72,14 @@ function getWorkspaceFiles(): string[] {
 
 
 export function activate(context: vscode.ExtensionContext) {
+  vscode.commands.executeCommand('vscode.setEditorLayout', {
+    orientation: 0,
+    groups: [
+      { groups: [{}], size: 0.7 },
+      { groups: [{}], size: 0.3 }
+    ]
+  });
+
   const disposable = vscode.commands.registerCommand('botcoder.openChat', () => {
     const panel = vscode.window.createWebviewPanel(
       'botcoderChat',
@@ -100,6 +105,10 @@ export function activate(context: vscode.ExtensionContext) {
     html = html.replace('${webviewUri}', scriptUri.toString());
     panel.webview.html = html;
 
+    // gemini models
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const chat = model.startChat({}); // keep conversation going
+
     // code later;
     panel.webview.onDidReceiveMessage(
       async (message) => {
@@ -115,10 +124,10 @@ export function activate(context: vscode.ExtensionContext) {
                 : `// ❌ File not found: ${filename}`;
             }).join('\n\n');
 
-            aiResponse = await fetchGeminiReplyFileChat(userInput, fileContent);
+            aiResponse = await fetchGeminiReplyFileChat(chat, userInput, fileContent);
           } else {
 
-            aiResponse = await fetchGeminiReplyFileChat(userInput);
+            aiResponse = await fetchGeminiReplyFileChat(chat, userInput);
           }
 
 
@@ -130,6 +139,9 @@ export function activate(context: vscode.ExtensionContext) {
           const files = getWorkspaceFiles();
           panel.webview.postMessage({ type: 'fileList', value: files });
 
+        }
+        else if (message.type === 'clearChat') {
+          messageParts.splice(0, messageParts.length);
         }
       },
       undefined,

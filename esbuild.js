@@ -1,4 +1,6 @@
+require('dotenv').config();
 const esbuild = require("esbuild");
+
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -36,6 +38,10 @@ async function main() {
     external: ['vscode'],
     logLevel: 'silent',
     plugins: [esbuildProblemMatcherPlugin],
+    define: {
+      'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
+    },
+
   });
 
   const frontend = await esbuild.context({

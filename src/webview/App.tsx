@@ -1,173 +1,170 @@
-import React, { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+// // File: src/App.tsx
+// import React, { useEffect, useState } from "react";
+// import ChatContainer from "./components/ChatContainer";
+// import ChatInput from "./components/ChatInput";
+// import { Message } from "./types";
+// import { RiChatNewLine } from "react-icons/ri";
+// import FileSelector from "./components/FileSelector";
 
+// // Acquire VS Code API
+// declare const acquireVsCodeApi: () => any;
+// const vscode = acquireVsCodeApi();
+
+// const App: React.FC = () => {
+//   const [fileList, setFileList] = useState<string[]>([]);
+//   const [inputRef, setInputRef] = useState<HTMLTextAreaElement | null>(null);
+
+//   const [messages, setMessages] = useState<Message[]>([
+//     {
+//       from: "ai",
+//       text: `Hello! Ask me anything.\n\n\`\`\`ts\nfunction greet(name: string): string {\n  return \`Hello, \${name}!\`;\n}\n\`\`\``,
+//     },
+//   ]);
+
+//   useEffect(() => {
+//     const handler = (event: MessageEvent) => {
+//       const message = event.data;
+//       if (message.type === "aiResponse") {
+//         setMessages((prev) => [...prev, { from: "ai", text: message.value }]);
+//       }
+//     };
+//     window.addEventListener("message", handler);
+//     return () => window.removeEventListener("message", handler);
+//   }, []);
+
+//   useEffect(() => {
+//     vscode.postMessage({ type: "getFileList" });
+
+//     const handler = (event: MessageEvent) => {
+//       const message = event.data;
+//       if (message.type === "aiResponse") {
+//         setMessages((prev) => [...prev, { from: "ai", text: message.value }]);
+//       } else if (message.type === "fileList") {
+//         setFileList(message.value || []);
+//       }
+//     };
+//     window.addEventListener("message", handler);
+//     return () => window.removeEventListener("message", handler);
+//   }, []);
+
+//   const handleSend = (text: string) => {
+//     const newMsg = { from: "user", text };
+//     setMessages((prev) => [...prev, newMsg]);
+
+//     const mentionedFiles =
+//       text.match(/@([\w./\\-]+)/g)?.map((name) => name.substring(1)) || [];
+
+//     vscode.postMessage({
+//       type: "userPrompt",
+//       value: text,
+//       files: mentionedFiles,
+//     });
+//   };
+
+//   return (
+//     <div className="app-container">
+//       <button
+//         onClick={() => {
+//           vscode.postMessage({ type: "clearChat" });
+//           setMessages([]); // clear UI messages
+//         }}
+//         className="new-chat-button"
+//       >
+//         <RiChatNewLine />
+//       </button>
+
+//       <ChatContainer messages={messages} />
+//       <FileSelector
+//         files={fileList}
+//         onSelect={(file) => {
+//           if (inputRef) {
+//             const cursor = inputRef.selectionStart || 0;
+//             const value = inputRef.value;
+//             const updated =
+//               value.substring(0, cursor) +
+//               `@${file} ` +
+//               value.substring(cursor);
+//             inputRef.value = updated;
+//             inputRef.focus();
+//           }
+//         }}
+//       />
+
+//       <ChatInput textareaRef={(el) => setInputRef(el)} onSend={handleSend} />
+//     </div>
+//   );
+// };
+
+// export default App;
+
+// File: src/App.tsx
+import React, { useEffect, useState } from "react";
+import ChatContainer from "./components/ChatContainer";
+import ChatInput from "./components/ChatInput";
+import { Message } from "./types";
+import { RiChatNewLine } from "react-icons/ri";
+
+// Acquire VS Code API
 declare const acquireVsCodeApi: () => any;
 const vscode = acquireVsCodeApi();
 
-type Message = {
-  from: "user" | "ai";
-  text: string;
-};
-
 const App: React.FC = () => {
+  const [fileList, setFileList] = useState<string[]>([]);
+  const [inputRef, setInputRef] = useState<HTMLTextAreaElement | null>(null);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       from: "ai",
-      text: `Hello! Ask me anything.
-
-\`\`\`ts
-function greet(name: string): bro {
-  return \`Hello, \${name}!\`;
-}
-\`\`\`
-`,
+      text: `Hello! Ask me anything.\n\n\u0060\u0060\u0060ts\nfunction greet(name: string): string {\n  return \u0060Hello, \${name}!\u0060;\n}\n\u0060\u0060\u0060`,
     },
   ]);
-  const [input, setInput] = useState("");
-
-  const sendMessage = () => {
-    if (!input.trim()) return;
-
-    const newMsg = { from: "user", text: input.trim() };
-    setMessages((prev) => [...prev, newMsg]);
-
-    // Sending to extension
-    vscode.postMessage({
-      type: "userPrompt",
-      value: input.trim(),
-      files: selectedFiles,
-    });
-
-    setInput("");
-  };
 
   useEffect(() => {
-    window.addEventListener("message", (event) => {
+    const handler = (event: MessageEvent) => {
       const message = event.data;
       if (message.type === "aiResponse") {
         setMessages((prev) => [...prev, { from: "ai", text: message.value }]);
+      } else if (message.type === "fileList") {
+        setFileList(message.value || []);
       }
-    });
+    };
+    window.addEventListener("message", handler);
+    vscode.postMessage({ type: "getFileList" });
+    return () => window.removeEventListener("message", handler);
   }, []);
 
+  const handleSend = (text: string) => {
+    const newMsg = { from: "user", text };
+    setMessages((prev) => [...prev, newMsg]);
+
+    const mentionedFiles =
+      text.match(/@([\w./\\-]+)/g)?.map((name) => name.substring(1)) || [];
+
+    vscode.postMessage({
+      type: "userPrompt",
+      value: text,
+      files: mentionedFiles,
+    });
+  };
+
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        style={{
-          // display: "flex",
-          flex: 1,
-          // flexDirection: "column",
-          overflowY: "auto",
-          padding: "1rem",
-          backgroundColor: "#1e1e1e",
+    <div className="app-container">
+      <button
+        onClick={() => {
+          vscode.postMessage({ type: "clearChat" });
+          setMessages([]);
         }}
+        className="new-chat-button"
       >
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            style={{
-              backgroundColor: msg.from === "user" ? "#007acc" : "#2d2d2d",
-              color: "#fff",
-              alignSelf: msg.from === "user" ? "flex-start" : "flex-end",
-              marginBottom: "1rem",
-              padding: "0.75rem",
-              borderRadius: "10px",
-              maxWidth: "80%",
-              minWidth: "70%",
-            }}
-          >
-            <ReactMarkdown
-              children={msg.text}
-              remarkPlugins={[remarkGfm]}
-              components={{
-                code({ node, inline, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || "");
-                  return !inline && match ? (
-                    <SyntaxHighlighter
-                      style={oneDark}
-                      language={match[1]}
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  ) : (
-                    <code
-                      style={{
-                        backgroundColor: "#444",
-                        padding: "0.2rem 0.4rem",
-                        borderRadius: "4px",
-                      }}
-                      {...props}
-                    >
-                      {children}
-                    </code>
-                  );
-                },
-              }}
-            />
-          </div>
-        ))}
-      </div>
+        <RiChatNewLine />
+      </button>
 
-      <div
-        style={{
-          backgroundColor: "#252526",
-          padding: "0.5rem",
-          display: "flex",
-          alignItems: "flex-end",
-          gap: "0.5rem",
-        }}
-      >
-        <textarea
-          style={{
-            flex: 1,
-            backgroundColor: "#1e1e1e",
-            border: "1px solid #444",
-            borderRadius: "6px",
-            color: "#fff",
-            padding: "0.5rem",
-            minHeight: "2.5rem",
-            maxHeight: "35vh",
-            resize: "vertical",
-            fontFamily: "monospace",
-            lineHeight: "1.4",
-            whiteSpace: "pre-wrap",
-          }}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          placeholder="Ask BotCoder... (Shift+Enter = newline)"
-        />
-
-        <button
-          onClick={sendMessage}
-          style={{
-            padding: "0.6rem 1.2rem",
-            borderRadius: "6px",
-            backgroundColor: "#0e639c",
-            color: "#fff",
-            border: "none",
-            fontWeight: "bold",
-          }}
-        >
-          Send
-        </button>
-      </div>
+      <ChatContainer messages={messages} />
+      <ChatInput
+        onSend={handleSend}
+        fileList={fileList}
+        textareaRef={setInputRef}
+      />
     </div>
   );
 };

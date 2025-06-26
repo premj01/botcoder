@@ -4,11 +4,189 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BotCoder</title>
-
-    <link href="${webviewUri}/webview.css" rel="stylesheet" />
   </head>
-  <body>
+  <body style="height: 100vh">
+    <style>
+      .app-container {
+        height: 80vh;
+      }
+      .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        /* background-color: #1e1e1e; */
+        background-color: #6868681c;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        scroll-behavior: smooth;
+        scrollbar-width: thin;
+        /* scrollbar-color: #000000 #1e1e1e; */
+        scrollbar-color: rgb(85 85 85 / 21%) rgb(93 93 93 / 17%);
+        height: 100%;
+      }
+
+      .chat-container::-webkit-scrollbar {
+        width: 3px;
+      }
+
+      .chat-container::-webkit-scrollbar-thumb {
+        /* background-color: #555; */
+        border-radius: 3px;
+      }
+
+      /* File: src/styles/ChatMessage.css */
+
+      .inline-code {
+        /* background-color: #333; */
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        color: #ffcb6b;
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-x: auto;
+      }
+
+      code {
+        background-color: transparent;
+      }
+
+      /* File: src/styles/MessageBubble.css */
+
+      .message-bubble {
+        max-width: 90%;
+        min-width: 40%;
+        padding: 0.6rem 0.8rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        color: #ffffff;
+        word-break: break-word;
+        white-space: pre-wrap;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .message-bubble.user {
+        /* background-color: #007acc; */
+        background-color: #095a9026;
+        align-self: flex-start;
+        /* border-top-right-radius: 0; */
+        border-top-left-radius: 0;
+        text-align: right;
+      }
+
+      .message-bubble.ai {
+        /* background-color: #2d2d2d; */
+        background-color: #4a4a4a26;
+        align-self: flex-start;
+        border-top-left-radius: 0;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* File: src/styles/ChatInput.css */
+
+      .chat-input {
+        display: flex;
+        position: sticky;
+        bottom: 0px;
+        padding: 0.75rem;
+        background-color: #2525265a;
+        /* border-top: 1px solid #3333334b; */
+        gap: 0.5rem;
+      }
+
+      .chat-textarea {
+        flex: 1;
+        resize: vertical;
+        /* background-color: #1e1e1e; */
+        background-color: #61606030;
+        /* color: white; */
+        color: #cfcfcf;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-family: monospace;
+        font-size: 0.75rem;
+        min-height: 2.5rem;
+        max-height: 35vh;
+        line-height: 1.4;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+      }
+
+      .chat-send-btn {
+        background-color: #0e639c75;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .chat-send-btn:hover {
+        background-color: #1177bb;
+      }
+      .new-chat-button {
+        background-color: #cd716e92;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        margin: 0.5rem;
+        align-self: flex-end;
+        cursor: grab;
+        position: fixed;
+        top: 0px;
+        right: 10px;
+      }
+
+      /* File: src/styles/FileSelector.css */
+      .file-selector {
+        background-color: #1e1e1e;
+        border-top: 1px solid #444;
+        padding: 0.5rem;
+      }
+
+      .file-selector-title {
+        color: #bbb;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .file-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-height: 120px;
+        overflow-y: auto;
+      }
+
+      .file-item {
+        color: #4aa5f0;
+        cursor: pointer;
+        padding: 0.3rem 0.5rem;
+        border-radius: 4px;
+      }
+
+      .file-item:hover {
+        background-color: #2a2d2e;
+      }
+    </style>
     <div id="root"></div>
-    <script type="module" src="${webviewUri}"></script>
+    <script src="${webviewUri}"></script>
   </body>
 </html>

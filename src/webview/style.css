@@ -1,9 +1,127 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* body {
+ body {
   background: #1e1e1e;
   color: #fff;
   font-family: sans-serif;
-} */
+}  */
+/* File: src/styles/ChatContainer.css */
+
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #1e1e1e;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #555 #1e1e1e;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 3px;
+}
+
+/* File: src/styles/ChatMessage.css */
+
+.inline-code {
+  background-color: #333;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #ffcb6b;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+code {
+  background-color: transparent;
+}
+
+/* File: src/styles/MessageBubble.css */
+
+.message-bubble {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  word-break: break-word;
+  white-space: pre-wrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease;
+}
+
+.message-bubble.user {
+  background-color: #007acc;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+
+.message-bubble.ai {
+  background-color: #2d2d2d;
+  align-self: flex-end;
+  border-top-right-radius: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* File: src/styles/ChatInput.css */
+
+.chat-input {
+  display: flex;
+  padding: 0.75rem;
+  background-color: #252526;
+  border-top: 1px solid #333;
+  gap: 0.5rem;
+}
+
+.chat-textarea {
+  flex: 1;
+  resize: vertical;
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-family: monospace;
+  font-size: 0.95rem;
+  min-height: 2.5rem;
+  max-height: 35vh;
+  line-height: 1.4;
+}
+
+.chat-send-btn {
+  background-color: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.chat-send-btn:hover {
+  background-color: #1177bb;
+}
