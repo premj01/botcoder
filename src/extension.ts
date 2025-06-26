@@ -9,10 +9,6 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-
-
-
-
 const messageParts: (string | Part)[] = [];
 
 async function fetchGeminiReplyFileChat(chat: ChatSession, prompt: string, fileContent: string = ""): Promise<string> {
@@ -72,13 +68,13 @@ function getWorkspaceFiles(): string[] {
 
 
 export function activate(context: vscode.ExtensionContext) {
-  vscode.commands.executeCommand('vscode.setEditorLayout', {
-    orientation: 0,
-    groups: [
-      { groups: [{}], size: 0.7 },
-      { groups: [{}], size: 0.3 }
-    ]
-  });
+  // vscode.commands.executeCommand('vscode.setEditorLayout', {
+  //   orientation: 0,
+  //   groups: [
+  //     { groups: [{}], size: 0.7 },
+  //     { groups: [{}], size: 0.3 }
+  //   ]
+  // });
 
   const disposable = vscode.commands.registerCommand('botcoder.openChat', () => {
     const panel = vscode.window.createWebviewPanel(

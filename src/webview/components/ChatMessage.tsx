@@ -56,8 +56,8 @@ const ChatMessage: React.FC<Props> = ({ from, text }) => {
                   onClick={(e) => handleCopyToClipboard(e, codeText, index)}
                   style={{
                     position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    top: "-7px",
+                    right: "-7px",
                     background: "rgba(255, 255, 255, 0.2)",
                     color: "white",
                     border: "none",

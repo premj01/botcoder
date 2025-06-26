@@ -15,7 +15,7 @@ const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       from: "ai",
-      text: `Hello! Ask me anything.\n\n\u0060\u0060\u0060ts\nfunction greet(name: string): string {\n  return \u0060Hello, \${name}!\u0060;\n}\n\u0060\u0060\u0060`,
+      text: `Hey Buddy! Ask me anything.\n\n\u0060\u0060\u0060ts\nfunction note(name: string): string {\n  return \u0060enter: @filename to send any file in current working directory\u0060;\n}\n\u0060\u0060\u0060`,
     },
   ]);
 
