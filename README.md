@@ -5,7 +5,7 @@ Watch the walkthrough of BotCoder in action:
 
 [![Watch on YouTube](https://raw.githubusercontent.com/premj01/botcoder/refs/heads/main/Public%20Resources/BotCoder%20AI.png)](https://youtu.be/biTTnaTQh64?si=ehZiF7xO5ekfrPz3)
 
-> Replace `YOUR_VIDEO_ID_HERE` with the actual ID after uploading.
+
 
 ---
 # BotCoder - VS Code AI Assistant Extension
