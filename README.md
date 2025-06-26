@@ -7,12 +7,10 @@ BotCoder is an AI-powered coding assistant built into a Visual Studio Code exten
 ## Features
 
 - ✅ React + TypeScript WebView UI
-- ✅ DaisyUI + Tailwind CSS styled chat
 - ✅ Gemini AI integration with `@google/generative-ai`
 - ✅ Chat memory across interactions
 - ✅ Code blocks with copy buttons
 - ✅ Mention files with `@filename` to include content in prompts
-- ✅ Update Gemini API key using the extension interface
 - ✅ Automatically scrolls to the latest message
 - ✅ YouTube demo link support in README
 
